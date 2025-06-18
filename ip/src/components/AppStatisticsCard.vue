@@ -1,11 +1,6 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <v-card
-    class="mx-auto my-6 py-4 px-6"
-    color="blue"
-    elevation="16"
-    max-width="400px"
-    min-width="280px"
-  >
+  <v-card class="mx-auto  py-4 px-6" color="blue" elevation="16" max-width="400px" min-width="310px">
     <v-card-item>
       <div class="content-wrapper">
         <div class="text-content">
