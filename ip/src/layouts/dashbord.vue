@@ -28,6 +28,8 @@ import { ref } from 'vue'
 const links = [
   ['mdi-home', 'Home', '/'],
   ['mdi-key-variant', 'Api key', '/token'],
+  ['mdi-cash', 'Billing', '/billing'],
+
 
 ]
 

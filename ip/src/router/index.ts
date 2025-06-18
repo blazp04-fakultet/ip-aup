@@ -28,6 +28,11 @@ const router = createRouter({
           name: "token",
           component: () => import("@/pages/token.vue"),
         },
+        {
+          path: "/billing",
+          name: "billing",
+          component: () => import("@/pages/billing.vue"),
+        },
       ],
     },
     {
