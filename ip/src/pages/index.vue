@@ -13,8 +13,8 @@
     </v-container>
     <div class="details-section">
 
-      <ModelUsage class="model-usage" />
-      <ModelUsage class="model-usage" />
+      <ModelUsage style="flex: 1" />
+      <ReacentActivity style="flex: 1" />
     </div>
   </div>
 
@@ -27,10 +27,5 @@ const cards = ["syas", "s", "d", "f"];
 <style>
 .details-section {
   display: flex;
-}
-
-.model-usage {
-  flex: 1;
-  margin-left: 20px;
 }
 </style>
