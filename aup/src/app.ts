@@ -1,11 +1,13 @@
 import express from 'express';
 import { config } from './core/config/mod.ts';
 import v1router from './api/v1/routes/index.ts';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger.ts';
 
 const app = express();
 
-// // Middleware for JSON parsing
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1', v1router);
