@@ -3,6 +3,7 @@ import userRoutes from './users.ts';
 import analyticsRoutes from './analytics.ts';
 import apiKeyRoutes from './apiKey.ts';
 import balanceRoutes from './balance.ts';
+import authRoutes from './auth.ts';
 
 const v1router = Router();
 
@@ -10,6 +11,7 @@ v1router.use('/users', userRoutes);
 v1router.use('/analytics', analyticsRoutes);
 v1router.use('/api-keys', apiKeyRoutes);
 v1router.use('/balance', balanceRoutes);
+v1router.use('/auth', authRoutes);
 
 v1router.get('/health', (req, res) => {
   res.json({

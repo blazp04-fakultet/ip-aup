@@ -22,6 +22,7 @@ export const generateSchemasFromTypes = () => {
     path.join(__dirname, '../models/dto/modelUsageListDto.ts'),
     path.join(__dirname, '../models/dto/summaryDto.ts'),
     path.join(__dirname, '../models/dto/userDto.ts'),
+    path.join(__dirname, '../models/dto/authDto.ts'),
   ];
 
   const program = TJS.getProgramFromFiles(modelFiles, compilerOptions);
@@ -44,6 +45,10 @@ export const generateSchemasFromTypes = () => {
     'UpdateApiKeyParams',
     'ActivityListDto',
     'ActivityDto',
+    'LoginRequestDto',
+    'AuthResponseDto',
+    'RefreshTokenRequestDto',
+    'RegisterRequestDto',
   ];
 
   typeNames.forEach((typeName) => {
