@@ -14,7 +14,13 @@ export const generateSchemasFromTypes = () => {
 
   // Get all model files
   const modelFiles = [
-    path.join(__dirname, '../models/user.ts'),
+    path.join(__dirname, '../models/dto/accountBalanceDto.ts'),
+    path.join(__dirname, '../models/dto/activityDto.ts'),
+    path.join(__dirname, '../models/dto/activityListDto.ts'),
+    path.join(__dirname, '../models/dto/apiKeyDto.ts'),
+    path.join(__dirname, '../models/dto/modelUsageDto.ts'),
+    path.join(__dirname, '../models/dto/modelUsageListDto.ts'),
+    path.join(__dirname, '../models/dto/summaryDto.ts'),
     path.join(__dirname, '../models/dto/userDto.ts'),
   ];
 
@@ -22,7 +28,21 @@ export const generateSchemasFromTypes = () => {
 
   // Fix: Properly type the schemas object
   const schemas: Record<string, any> = {};
-  const typeNames = ['User', 'CreateUserDto', 'UpdateUserDto'];
+  const typeNames = [
+    'SummaryDTO',
+    'CreateUserDto',
+    'UpdateUserDto',
+    'UserResponseDto',
+    'AccountBalanceDTO',
+    'AddFundsRequest',
+    'ModelUsageListDto',
+    'ModelUsageListRequestDto',
+    'ActivityListRequestDto',
+    'ModelUsageDTO',
+    'ApiKey',
+    'ActivityListDto',
+    'ActivityDto',
+  ];
 
   typeNames.forEach((typeName) => {
     const schema = TJS.generateSchema(program, typeName, settings);

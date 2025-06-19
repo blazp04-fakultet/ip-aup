@@ -1,17 +1,18 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import { generateSchemasFromTypes } from './core/utils/autoSchemaGenerator';
+import { config } from './core/config/mod';
 
 const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Your API Title',
+      title: 'LLMBridge API',
       version: '1.0.0',
-      description: 'A description of your API',
+      description: 'API dokumentacija za aplikaciju LLMBridge',
     },
     servers: [
       {
-        url: 'http://localhost:3000', // Replace with your server URL
+        url: `http://${config.hostname}:${config.port}`,
       },
     ],
     components: {
@@ -20,7 +21,7 @@ const options = {
       },
     },
   },
-  apis: ['./src/api/v1/routes/*.ts', './src/api/v1/handlers/*.ts'], // Path to your route files
+  apis: ['./src/api/v1/routes/*.ts', './src/api/v1/handlers/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

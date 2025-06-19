@@ -1,6 +1,6 @@
 // apiKeys.ts
 import { Connection, RowDataPacket } from 'mysql2/promise';
-import { ApiKey } from '../../models/dto/apiKey';
+import { ApiKey } from '../../models/dto/apiKeyDto';
 
 export interface CreateApiKeyParams {
   id: string;
