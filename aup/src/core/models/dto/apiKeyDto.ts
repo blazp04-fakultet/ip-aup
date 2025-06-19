@@ -1,4 +1,4 @@
-export interface ApiKey {
+export interface ApiKeyDto {
   id: number;
   apiKey: string;
   tokenUsage: number;
@@ -10,4 +10,9 @@ export interface ApiKey {
 
 export interface CreateApiKeyParams {
   name: string;
+}
+
+export interface UpdateApiKeyParams {
+  id: number;
+  isActive: boolean;
 }

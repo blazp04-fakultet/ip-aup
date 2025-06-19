@@ -39,7 +39,9 @@ export const generateSchemasFromTypes = () => {
     'ModelUsageListRequestDto',
     'ActivityListRequestDto',
     'ModelUsageDTO',
-    'ApiKey',
+    'ApiKeyDto',
+    'CreateApiKeyParams',
+    'UpdateApiKeyParams',
     'ActivityListDto',
     'ActivityDto',
   ];
