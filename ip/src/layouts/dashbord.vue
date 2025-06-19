@@ -2,9 +2,8 @@
   <v-app id="inspire">
 
     <v-navigation-drawer v-model="drawer">
-      <v-sheet class="pa-4" color="grey-lighten-4">
-        <v-avatar class="mb-4" color="grey-darken-1" size="64" />
-        <div>john@google.com</div>
+      <v-sheet class="pa-4" color="grey-darken-5">
+        <div>blaz@blazperic.com</div>
       </v-sheet>
 
       <v-divider />
@@ -26,7 +25,7 @@
 import { ref } from 'vue'
 
 const links = [
-  ['mdi-home', 'Home', '/'],
+  ['mdi-home', 'Home', '/home'],
   ['mdi-key-variant', 'Api key', '/token'],
   ['mdi-cash', 'Billing', '/billing'],
 

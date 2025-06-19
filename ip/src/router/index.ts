@@ -16,10 +16,15 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "main",
+      component: () => import("@/pages/(auth)/login.vue"),
+    },
+    {
+      path: "/",
       component: Dashbord,
       children: [
         {
-          path: "",
+          path: "/home",
           name: "Home",
           component: () => import("@/pages/index.vue"),
         },
@@ -35,6 +40,7 @@ const router = createRouter({
         },
       ],
     },
+
     {
       path: "/login",
       name: "Login",
