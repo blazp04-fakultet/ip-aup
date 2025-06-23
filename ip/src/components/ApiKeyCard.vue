@@ -1,13 +1,20 @@
 <template>
   <div class="api-key-card">
     <div class="card-row">
-      <!-- Status Icon & Name -->
       <div class="col col-name">
         <div class="status-section">
           <div class="status-icon" />
           <div class="name-section">
-            <div class="service-name">OpenAI Production</div>
-            <div class="status-chip">active</div>
+            <div class="service-name">{{ token.name }}</div>
+            <div
+              class="status-chip"
+              :style="{
+                color: token.isActive ? 'green' : 'red',
+                backgroundColor: token.isActive ? '  #263027' : '#360101',
+              }"
+            >
+              {{ token.isActive ? "Active" : "Inactive" }}
+            </div>
           </div>
         </div>
       </div>
@@ -16,29 +23,32 @@
         <div class="col col-key">
           <div class="label">API Key</div>
           <div class="key">
-            sk-...J9K2
-            <span class="copy-icon" @click="copyKey">📋</span>
+            {{ token.apiKey }}
           </div>
         </div>
 
         <div class="col col-small">
           <div class="label">Usage</div>
-          <div class="value">12,647</div>
+          <div class="value">{{ token.tokenUsage }}</div>
         </div>
 
         <div class="col col-small">
           <div class="label">Cost</div>
-          <div class="value green-text">$89.50</div>
+          <div class="value green-text">${{ token.moneySpent }}</div>
         </div>
 
         <div class="col">
           <div class="label">Created</div>
-          <div class="value">1/15/2024</div>
+          <div class="value">{{ token.createdAt.toLocaleString() }}</div>
         </div>
 
         <div class="col col-toggle">
           <label class="switch">
-            <input v-model="isEnabled" type="checkbox">
+            <input
+              v-model="token.isActive"
+              type="checkbox"
+              @click="handleClick"
+            />
             <span class="slider" />
           </label>
         </div>
@@ -47,15 +57,19 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref } from "vue";
+import { type ApiKeyDto } from "@/models/dto/apiKeyDto";
 
-const isEnabled = ref(true)
+const props = defineProps<{
+  token: ApiKeyDto;
+}>();
+console.log("props.token");
+console.log(props.token);
 
-const copyKey = () => {
-  // Add copy functionality here
-  console.log('Copy API key')
-}
+const handleClick = () => {
+  console.log("Checkbox clicked!");
+};
 </script>
 
 <style scoped>
@@ -133,8 +147,7 @@ const copyKey = () => {
   display: inline-block;
   padding: 4px 10px;
   font-size: 11px;
-  background-color: #263027;
-  color: #64B968;
+
   border-radius: 14px;
   width: fit-content;
 }
@@ -171,7 +184,7 @@ const copyKey = () => {
 }
 
 .green-text {
-  color: #64B968;
+  color: #64b968;
 }
 
 .switch {
@@ -211,11 +224,11 @@ const copyKey = () => {
   border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked + .slider {
   background-color: #4caf50;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   transform: translateX(20px);
 }
 
