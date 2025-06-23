@@ -1,19 +1,36 @@
 <!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <v-card class="mx-auto  py-4 px-6" color="blue" elevation="16" max-width="400px" min-width="310px">
+  <v-card
+    class="mx-auto mt-4 py-4 px-6"
+    :style="{ backgroundColor: `${color}40` }"
+    elevation="16"
+    max-width="600px"
+    min-width="22%"
+  >
     <v-card-item>
       <div class="content-wrapper">
         <div class="text-content">
-          <div class="main-number">15,845</div>
-          <div class="subtitle">Total request</div>
+          <div class="main-number" :style="{ color: color }">{{ value }}</div>
+          <div class="subtitle">{{ title }}</div>
         </div>
         <div>
-          <v-icon class="icon">mdi-chart-line</v-icon>
+          <v-icon class="icon" :style="{ color: color, opacity: 0.6 }">{{
+            icon
+          }}</v-icon>
         </div>
       </div>
     </v-card-item>
   </v-card>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  title: string;
+  value: string;
+  icon: string;
+  color: string;
+}>();
+</script>
 
 <style scoped>
 .content-wrapper {

@@ -1,11 +1,7 @@
 <template>
   <div class="model-usage-container">
     <h2>Korišteni modeli</h2>
-    <v-virtual-scroll :height="300" :items="[
-      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-      '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'
-    ]">
+    <v-virtual-scroll :height="`calc(100vh - 350px)`" :items="modelStore.model">
       <template #default="{ item }">
         <v-card>
           <div class="usage-card-header">
@@ -14,26 +10,43 @@
                 <v-icon>mdi-chart-line</v-icon>
               </div>
               <div class="model-info">
-                <v-card-title>GPT-{{ item }}</v-card-title>
-                <v-card-subtitle>OpenAI - 5487 request</v-card-subtitle>
+                <v-card-title>{{ item.model }}</v-card-title>
+                <v-card-subtitle
+                  >{{ item.modelProvider }} -
+                  {{ item.requestCount }} requests</v-card-subtitle
+                >
               </div>
             </div>
             <div class="right-section">
               <div class="usage-stats">
-                <v-card-subtitle>0.0001 $</v-card-subtitle>
                 <v-card-subtitle>Usage</v-card-subtitle>
+                <v-card-subtitle>{{ item.moneySpent }} $</v-card-subtitle>
               </div>
             </div>
           </div>
           <div class="model-usage-card-statistics">
-            <v-progress-linear model-value="34" />
-            <p>34% of total usage</p>
+            <v-progress-linear :model-value="item.percentageOfTotalUsage" />
+            <p>{{ item.percentageOfTotalUsage }}% of total usage</p>
           </div>
         </v-card>
       </template>
     </v-virtual-scroll>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { ModelUsageListRequestDto } from "@/models/dto/modelUsageListDto";
+import { useModelStore } from "@/stores/modelStore";
+
+const modelStore = useModelStore();
+onMounted(async () => {
+  const searchModel: ModelUsageListRequestDto = {
+    page: 1,
+    pageSize: 10,
+  };
+  await modelStore.getModelUsage(searchModel);
+});
+</script>
 
 <style>
 .model-usage-container {

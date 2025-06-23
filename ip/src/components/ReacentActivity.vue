@@ -1,11 +1,10 @@
 <template>
   <div class="activity-usage-container">
     <h2>Reacent Activity</h2>
-    <v-virtual-scroll :height="300" :items="[
-      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-      '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'
-    ]">
+    <v-virtual-scroll
+      :height="`calc(100vh - 350px)`"
+      :items="activityStore.activity"
+    >
       <template #default="{ item }">
         <v-card>
           <div class="usage-card-header">
@@ -14,23 +13,40 @@
                 <v-icon>mdi-chart-line</v-icon>
               </div>
               <div class="activity-info">
-                <v-card-title>API call to GPT-{{ item }}</v-card-title>
-                <v-card-subtitle>2 min ago</v-card-subtitle>
+                <v-card-title>API call to {{ item.modelName }}</v-card-title>
+                <v-card-subtitle
+                  >{{ timeAgo(item.createdAt) }}
+                </v-card-subtitle>
               </div>
             </div>
             <div class="right-section">
               <div class="usage-stats">
-                <v-card-subtitle>1,250 tokens</v-card-subtitle>
-                <v-card-subtitle>$0.025</v-card-subtitle>
+                <v-card-subtitle>{{ item.tokenUsed }} tokens</v-card-subtitle>
+                <v-card-subtitle>${{ item.moneySpent }}</v-card-subtitle>
               </div>
             </div>
           </div>
-
         </v-card>
       </template>
     </v-virtual-scroll>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { ActivityListRequestDto } from "@/models/dto/activityListDto";
+import { useActivityStore } from "@/stores/activityStore";
+import { timeAgo } from "@/utils/timeAgo";
+
+const activityStore = useActivityStore();
+
+onMounted(async () => {
+  const searchModel: ActivityListRequestDto = {
+    page: 1,
+    pageSize: 10,
+  };
+  await activityStore.getActivity(searchModel);
+});
+</script>
 
 <style>
 .activity-usage-container {
@@ -39,6 +55,12 @@
   margin-left: 20px;
   padding: 10px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .activity-usage-container {
+    margin-top: 50px;
+  }
 }
 
 .activity-icon {
