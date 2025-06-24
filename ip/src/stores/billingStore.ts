@@ -1,16 +1,19 @@
+import type { AddFundsRequest } from "@/models/dto/accountBalanceDto";
+import { addFunds, fetchBalance } from "@/repositories/balanceRepository";
 import { defineStore } from "pinia";
 
 export const useBillingStore = defineStore("billingStore", () => {
   const balance = ref<number>(0);
 
   const getBalance = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    balance.value = 1000;
+    const response = await fetchBalance();
+    balance.value = response.currentBalance;
   };
 
   const addBalance = async (amount: number) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    balance.value += amount;
+    const params: AddFundsRequest = { amount };
+    const response = await addFunds(params);
+    balance.value = response.currentBalance;
   };
   return {
     balance,
