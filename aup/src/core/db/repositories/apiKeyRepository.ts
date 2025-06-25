@@ -6,7 +6,7 @@ export interface CreateApiKeyParams {
   id: string;
   key: string;
   role?: string;
-  user_id: string; // Added user_id as it's required in your schema
+  user_id: string;
 }
 
 export async function addApiKey(

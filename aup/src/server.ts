@@ -4,7 +4,7 @@ import { config } from './core/config/mod.ts';
 import { createDatabaseConnection, DatabaseConfig } from './core/db/client.ts';
 import { initializeMigrations } from './core/db/migrations/migrations.ts';
 
-let dbConnection: Connection;
+export let dbConnection: Connection;
 async function main() {
   console.log('Connecting to database...');
   console.log(config.database);
