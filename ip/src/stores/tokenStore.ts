@@ -1,4 +1,13 @@
-import type { ApiKeyDto } from "@/models/dto/apiKeyDto";
+import type {
+  ApiKeyDto,
+  CreateApiKeyParams,
+  UpdateApiKeyParams,
+} from "@/models/dto/apiKeyDto";
+import {
+  createApiKey,
+  fetchApiKeys,
+  updateApiKey,
+} from "@/repositories/apiKeyRepository";
 import { defineStore } from "pinia";
 
 export const useTokeStore = defineStore("tokenStore", () => {
@@ -6,32 +15,24 @@ export const useTokeStore = defineStore("tokenStore", () => {
   const newApiKey = ref("");
 
   const getApiKeys = async () => {
-    apiKeys.value = [
-      {
-        id: 1,
-        apiKey: "1234",
-        tokenUsage: 1,
-        moneySpent: 1,
-        createdAt: new Date(),
-        name: "Test",
-        isActive: true,
-      },
-      {
-        id: 2,
-        apiKey: "1234",
-        tokenUsage: 1,
-        moneySpent: 1,
-        createdAt: new Date(),
-        name: "Test",
-        isActive: true,
-      },
-    ];
+    const response = await fetchApiKeys();
+    apiKeys.value = response;
   };
 
   const addNewApiKey = async (name: string) => {
-    newApiKey.value = "ybgjkndsbjkadsfhjkdshfs";
+    const params: CreateApiKeyParams = {
+      name,
+    };
+    const response = await createApiKey(params);
+    newApiKey.value = response.apiKey;
+  };
 
-    console.log("newApiKey", newApiKey.value);
+  const deleteApiKey = async (id: number) => {
+    const params: UpdateApiKeyParams = {
+      id,
+      isActive: false,
+    };
+    const response = await updateApiKey(params);
   };
   const clear = async () => {
     newApiKey.value = "";
@@ -40,6 +41,7 @@ export const useTokeStore = defineStore("tokenStore", () => {
   return {
     apiKeys,
     newApiKey,
+    deleteApiKey,
     clear,
     getApiKeys,
     addNewApiKey,

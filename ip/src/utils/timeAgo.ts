@@ -1,4 +1,5 @@
-export function timeAgo(date: Date): string {
+export function timeAgo(dateString: string): string {
+  const date = new Date(dateString);
   const currentTime = new Date();
   const timeDiff = currentTime.getTime() - date.getTime();
 

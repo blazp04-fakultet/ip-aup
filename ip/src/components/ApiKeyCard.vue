@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { type ApiKeyDto } from "@/models/dto/apiKeyDto";
+import { useTokeStore } from "@/stores/tokenStore";
 
 const props = defineProps<{
   token: ApiKeyDto;
@@ -67,8 +68,9 @@ const props = defineProps<{
 console.log("props.token");
 console.log(props.token);
 
-const handleClick = () => {
-  console.log("Checkbox clicked!");
+const tokenStore = useTokeStore();
+const handleClick = async () => {
+  await tokenStore.deleteApiKey(props.token.id!);
 };
 </script>
 
