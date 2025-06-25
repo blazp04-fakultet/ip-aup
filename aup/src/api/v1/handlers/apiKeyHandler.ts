@@ -1,6 +1,23 @@
 import { Request, Response } from 'express';
 import { ApiKeyDto } from '../../../core/models/dto/apiKeyDto';
 
+// // Create a new API key
+// const newApiKey = await addApiKey(connection, {
+//   id: 'some-uuid',
+//   key: 'ak_1234567890',
+//   role: 'admin',
+//   user_id: 'user-uuid'
+// });
+
+// // Validate an API key
+// const validKey = await validateApiKey(connection, 'ak_1234567890');
+
+// // Get all API keys for a user
+// const userKeys = await getApiKeysByUserId(connection, 'user-uuid');
+
+// // Soft delete an API key
+// const deleted = await deleteApiKey(connection, 'some-uuid');
+
 export const getApiKeys = async (req: Request, res: Response) => {
   try {
     const apiKey: ApiKeyDto = {
