@@ -109,23 +109,22 @@ export const getReacentActivity = async (req: Request, res: Response) => {
     const params: ActivityListRequestDto = req.body;
     const userId = extractUserIdFromToken(req.headers.authorization as string);
 
-    const data: UsageModel[] = await getUsageLogsByUserId(
-      dbConnection,
-      userId,
-      params,
-    );
+    const result = await getUsageLogsByUserId(dbConnection, userId, params);
 
-    const activity: ActivityDto[] = data.map((usage) => ({
+    const activity: ActivityDto[] = result.data.map((usage) => ({
       id: parseInt(usage.id),
       modelName: usage.model_name,
       createdAt: usage.created_at,
       tokenUsed: usage.token_count,
       moneySpent: calculatePrice(usage.token_count, usage.model_name),
     }));
+
+    const totalPages = Math.ceil(result.totalCount / params.pageSize);
+
     const activityList: ActivityListDto = {
-      page: 1,
-      pageSize: 10,
-      totalPages: 1,
+      page: params.page,
+      pageSize: params.pageSize,
+      totalPages: totalPages,
       data: activity,
     };
 

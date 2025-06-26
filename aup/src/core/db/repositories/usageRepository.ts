@@ -41,8 +41,20 @@ export async function getUsageLogsByUserId(
   connection: Connection,
   userId: string,
   searchModel: ActivityListRequestDto,
-): Promise<UsageModel[]> {
+): Promise<{ data: UsageModel[]; totalCount: number }> {
   const { page, pageSize } = searchModel;
+
+  const [countResult] = await connection.query(
+    `
+      SELECT COUNT(*) as total
+      FROM \`usage\`
+      WHERE user_id = ?
+    `,
+    [userId],
+  );
+
+  const totalCount = (countResult as any)[0].total;
+
   const [rows] = await connection.query(
     `
       SELECT 
@@ -61,9 +73,11 @@ export async function getUsageLogsByUserId(
     [userId, pageSize, (page - 1) * pageSize],
   );
 
-  return rows as UsageModel[];
+  return {
+    data: rows as UsageModel[],
+    totalCount,
+  };
 }
-
 export async function getModelUsageAnalytics(
   connection: Connection,
   userId: string,
