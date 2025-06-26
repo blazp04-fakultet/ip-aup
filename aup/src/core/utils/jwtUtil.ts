@@ -7,7 +7,6 @@ export const extractUserIdFromToken = (token: string): string => {
     const decoded = jwt.verify(token, config.jwtSecret as string) as {
       id: string;
     };
-    console.log(decoded);
     return decoded.id;
   } catch (error) {
     console.error('Error extracting user ID from token:', error);

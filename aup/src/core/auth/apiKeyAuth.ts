@@ -33,5 +33,6 @@ export const authenticateApiKey = async (
     res.status(403).json({ message: 'Invalid or expired token' });
     return;
   }
-  res.status(200).json({ message: valid });
+
+  next();
 };

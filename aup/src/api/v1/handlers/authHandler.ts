@@ -72,7 +72,6 @@ export const registerHandler = async (req: Request, res: Response) => {
       deletedAt: null,
     };
     await createUser(dbConnection, userModel);
-    console.log(userModel);
 
     const token = jwt.sign(
       { id: userModel.id, email: userModel.email },

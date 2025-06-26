@@ -39,8 +39,6 @@ export const getApiKeys = async (req: Request, res: Response) => {
       }),
     );
 
-    console.log(apiKeys);
-
     res.json({
       success: true,
       data: apiKeys,
@@ -59,7 +57,6 @@ export const createApiKey = async (req: Request, res: Response) => {
 
     const userId = extractUserIdFromToken(req.headers.authorization as string);
     const generatedApiKey = generateApiKey(userId);
-    console.log(generatedApiKey);
 
     const newApiKey = await addApiKey(dbConnection, {
       id: encryptApiKey(generatedApiKey).key,
@@ -97,8 +94,6 @@ export const updateApiKEyStatus = async (req: Request, res: Response) => {
 
     const encryptedKey = encryptApiKey(keyApi);
     const deleted = await deleteApiKey(dbConnection, encryptedKey.key);
-
-    console.log(deleted);
 
     res.json({
       success: true,

@@ -101,6 +101,7 @@ export const chatHandler = async (req: Request, res: Response) => {
 
     res.status(200).json(data);
   } catch (error: any) {
+    console.error('Error getting chat completion:', error);
     res.status(error?.response?.status || 500).json({
       success: false,
       message: 'Failed to get chat completion',
