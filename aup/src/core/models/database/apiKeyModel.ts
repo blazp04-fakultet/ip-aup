@@ -1,6 +1,7 @@
 export interface ApiKey {
   id: string;
   key: string;
+  name: string;
   role: string;
   user_id: string;
   created_at: Date;
@@ -8,12 +9,14 @@ export interface ApiKey {
   deleted_at: Date | null;
 }
 
-export interface CreateApiKeyRequest {
-  key: string;
-  role?: string;
-  user_id: string;
-}
-
 export interface UpdateApiKeyRequest {
   role?: string;
+}
+
+export interface CreateApiKeyParams {
+  id: string;
+  key: string;
+  name: string;
+  role?: string;
+  user_id: string;
 }

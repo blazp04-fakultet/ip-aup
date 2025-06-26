@@ -5,21 +5,43 @@ import {
   RefreshTokenRequestDto,
   RegisterRequestDto,
 } from '../../../core/models/dto/authDto';
-import { createUser } from '../../../core/db/repositories/userRepository';
+import {
+  createUser,
+  loginUser,
+} from '../../../core/db/repositories/userRepository';
 import { UserModel } from '../../../core/models/database/userModel';
 import { randomUUID } from 'crypto';
 import { dbConnection } from '../../../server';
 import { Connection } from 'mysql2/promise';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { config } from '../../../core/config/mod';
+import {
+  LoginParams,
+  LoginResult,
+} from '../../../core/db/repositories/loginModel';
 
 export const loginHandler = async (req: Request, res: Response) => {
   try {
     const data: LoginRequestDto = req.body;
 
+    const loginParams: LoginParams = {
+      email: data.email,
+      password: data.password,
+    };
+    const loginData: LoginResult = await loginUser(dbConnection, loginParams);
+
+    const token = jwt.sign(
+      { id: loginData.id, email: loginData.email },
+      config.jwtSecret,
+      {
+        expiresIn: '1h',
+      },
+    );
+
     const response: AuthResponseDto = {
-      token: 'token',
-      refreshToken: 'refreshToken',
+      token: token,
+      refreshToken: 'jhsddsbfkjbsdkjflers7324sd',
     };
 
     res.json({
@@ -52,11 +74,9 @@ export const registerHandler = async (req: Request, res: Response) => {
     await createUser(dbConnection, userModel);
     console.log(userModel);
 
-    const JWT_SECRET = 'your_jwt_secret';
-
     const token = jwt.sign(
       { id: userModel.id, email: userModel.email },
-      JWT_SECRET,
+      config.jwtSecret,
       {
         expiresIn: '1h',
       },
@@ -64,7 +84,7 @@ export const registerHandler = async (req: Request, res: Response) => {
 
     const response: AuthResponseDto = {
       token: token,
-      refreshToken: 'refreshToken',
+      refreshToken: 'jhsddsbfkjbsdkjflers7324sd',
     };
 
     res.json({

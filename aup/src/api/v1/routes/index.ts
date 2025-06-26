@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import userRoutes from './users.ts';
 import analyticsRoutes from './analytics.ts';
 import apiKeyRoutes from './apiKey.ts';
 import balanceRoutes from './balance.ts';
 import authRoutes from './auth.ts';
+import chatRoutes from './chat.ts';
 
 const v1router = Router();
 
-v1router.use('/users', userRoutes);
 v1router.use('/analytics', analyticsRoutes);
 v1router.use('/api-keys', apiKeyRoutes);
 v1router.use('/balance', balanceRoutes);
 v1router.use('/auth', authRoutes);
+v1router.use('/', chatRoutes);
 
 v1router.get('/health', (req, res) => {
   res.json({

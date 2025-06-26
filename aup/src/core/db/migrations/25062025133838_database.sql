@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `user`(
     `id` CHAR(36) NOT NULL,
     `first_name` VARCHAR(255) NOT NULL,
     `last_name` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
     `password` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `deleted_at` DATETIME NULL,
@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `user`(
 CREATE TABLE IF NOT EXISTS `api_keys`(
     `id` VARCHAR(255) NOT NULL,
     `key` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
     `role` VARCHAR(255) NOT NULL DEFAULT 'user',
     `user_id` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -39,6 +40,3 @@ ALTER TABLE `usage` ADD INDEX `usage_model_name_index`(`model_name`);
 
 ALTER TABLE `usage` ADD INDEX `usage_model_provider_index`(`model_provider`);
 
-ALTER TABLE `usage` ADD CONSTRAINT `usage_api_key_foreign` FOREIGN KEY(`api_key`) REFERENCES `api_keys`(`id`);
-
-ALTER TABLE `api_keys` ADD CONSTRAINT `api_keys_user_id_foreign` FOREIGN KEY(`user_id`) REFERENCES `user`(`id`);

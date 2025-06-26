@@ -1,35 +1,47 @@
 import { Request, Response } from 'express';
 import { ApiKeyDto } from '../../../core/models/dto/apiKeyDto';
-
-// // Create a new API key
-// const newApiKey = await addApiKey(connection, {
-//   id: 'some-uuid',
-//   key: 'ak_1234567890',
-//   role: 'admin',
-//   user_id: 'user-uuid'
-// });
+import {
+  addApiKey,
+  deleteApiKey,
+  getApiKeysByUserId,
+} from '../../../core/db/repositories/apiKeyRepository';
+import { dbConnection } from '../../../server';
+import { randomUUID } from 'crypto';
+import { encryptApiKey, generateApiKey } from '../../../core/utils/apiKeyUtil';
+import { getUserTotalUsageForApiKey } from '../../../core/db/repositories/usageRepository';
+import { calculatePrice } from '../../../core/utils/pricingUtil';
 
 // // Validate an API key
 // const validKey = await validateApiKey(connection, 'ak_1234567890');
 
-// // Get all API keys for a user
-// const userKeys = await getApiKeysByUserId(connection, 'user-uuid');
-
-// // Soft delete an API key
-// const deleted = await deleteApiKey(connection, 'some-uuid');
-
 export const getApiKeys = async (req: Request, res: Response) => {
   try {
-    const apiKey: ApiKeyDto = {
-      id: 1,
-      apiKey: 'test-api-key',
-      tokenUsage: 1000,
-      moneySpent: 10.5,
-      createdAt: new Date(),
-      name: 'Test API Key',
-      isActive: true,
-    };
-    const apiKeys: ApiKeyDto[] = [apiKey];
+    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+
+    const data = await getApiKeysByUserId(dbConnection, userID);
+
+    const apiKeys: ApiKeyDto[] = await Promise.all(
+      data.map(async (item) => {
+        // const encryptedKey = encryptApiKey(item.key);
+        // const keyIdentifier = `${encryptedKey.key}-${encryptedKey.secret}`;
+        // const totalUsage = await getUserTotalUsageForApiKey(
+        //   dbConnection,
+        //   keyIdentifier,
+        // );
+
+        return {
+          id: item.id,
+          apiKey: item.id.substring(0, 8) + '...',
+          tokenUsage: 100,
+          moneySpent: 2,
+          createdAt: item.created_at,
+          name: item.name,
+          isActive: item.deleted_at === null,
+        };
+      }),
+    );
+
+    console.log(apiKeys);
 
     res.json({
       success: true,
@@ -47,13 +59,25 @@ export const createApiKey = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
 
+    const userId = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const generatedApiKey = generateApiKey(userId);
+    console.log(generatedApiKey);
+
+    const newApiKey = await addApiKey(dbConnection, {
+      id: encryptApiKey(generatedApiKey).key,
+      key: encryptApiKey(generatedApiKey).secret,
+      name: apiKeyData.name,
+      role: 'admin',
+      user_id: userId,
+    });
+
     const apiKey: ApiKeyDto = {
-      id: 1,
-      apiKey: 'test-api-key',
-      tokenUsage: 1000,
-      moneySpent: 10.5,
+      id: newApiKey.id,
+      apiKey: generatedApiKey,
+      tokenUsage: 0,
+      moneySpent: 0,
       createdAt: new Date(),
-      name: 'Test API Key',
+      name: newApiKey.name,
       isActive: true,
     };
     res.json({
@@ -71,19 +95,16 @@ export const createApiKey = async (req: Request, res: Response) => {
 export const updateApiKEyStatus = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
+    const keyApi =
+      'sk_eysiuockgkg89ctmiqmusa55c47mu574-6wzrf4zlz9erqiqzd16bm42im7bx8zl4-a5d0e15a-2eb8-4978-b193-86510c7dafa5';
 
-    const apiKey: ApiKeyDto = {
-      id: 1,
-      apiKey: 'test-api-key',
-      tokenUsage: 1000,
-      moneySpent: 10.5,
-      createdAt: new Date(),
-      name: 'Test API Key',
-      isActive: true,
-    };
+    const encryptedKey = encryptApiKey(keyApi);
+    const deleted = await deleteApiKey(dbConnection, encryptedKey.key);
+
+    console.log(deleted);
+
     res.json({
       success: true,
-      data: apiKey,
     });
   } catch (error) {
     res.status(500).json({

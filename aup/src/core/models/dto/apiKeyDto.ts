@@ -1,5 +1,5 @@
 export interface ApiKeyDto {
-  id: number;
+  id: string;
   apiKey: string;
   tokenUsage: number;
   moneySpent: number;

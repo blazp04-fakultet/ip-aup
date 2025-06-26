@@ -23,6 +23,7 @@ export const generateSchemasFromTypes = () => {
     path.join(__dirname, '../models/dto/summaryDto.ts'),
     path.join(__dirname, '../models/dto/userDto.ts'),
     path.join(__dirname, '../models/dto/authDto.ts'),
+    path.join(__dirname, '../models/dto/chatDto.ts'),
   ];
 
   const program = TJS.getProgramFromFiles(modelFiles, compilerOptions);
@@ -49,6 +50,8 @@ export const generateSchemasFromTypes = () => {
     'AuthResponseDto',
     'RefreshTokenRequestDto',
     'RegisterRequestDto',
+    'ChatMessage',
+    'ChatCompletionRequestDto',
   ];
 
   typeNames.forEach((typeName) => {

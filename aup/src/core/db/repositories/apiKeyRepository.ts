@@ -1,30 +1,23 @@
-// apiKeys.ts
 import { Connection, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
-import { ApiKey } from '../../models/database/apiKeyModel';
-
-export interface CreateApiKeyParams {
-  id: string;
-  key: string;
-  role?: string;
-  user_id: string;
-}
+import { ApiKey, CreateApiKeyParams } from '../../models/database/apiKeyModel';
 
 export async function addApiKey(
   connection: Connection,
   params: CreateApiKeyParams,
 ): Promise<ApiKey> {
-  const { id, key, role = 'user', user_id } = params;
+  const { id, key, name, role = 'user', user_id } = params;
 
   const insertQuery = `
     INSERT INTO api_keys (
       id,
       \`key\`,
+      name,
       role,
       user_id
-    ) VALUES (?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?)
   `;
 
-  await connection.execute(insertQuery, [id, key, role, user_id]);
+  await connection.execute(insertQuery, [id, key, name, role, user_id]);
 
   const [rows] = await connection.query<RowDataPacket[]>(
     `SELECT id, \`key\`, role, user_id, created_at, updated_at, deleted_at 
@@ -63,6 +56,7 @@ export async function validateApiKey(
     SELECT 
       id,
       \`key\`,
+      name,
       role,
       user_id,
       created_at,
@@ -94,6 +88,7 @@ export async function getApiKeyById(
       SELECT 
         id,
         \`key\`,
+        name,
         role,
         user_id,
         created_at,
@@ -118,6 +113,7 @@ export async function getApiKeysByUserId(
       SELECT 
         id,
         \`key\`,
+        name,
         role,
         user_id,
         created_at,
@@ -166,3 +162,26 @@ export async function updateApiKey(
 
   return getApiKeyById(connection, id);
 }
+export const getApiKeyCount = async (
+  connection: Connection,
+  id: string,
+): Promise<number> => {
+  try {
+    const query = `
+      SELECT 
+        COUNT(*) as count
+      FROM api_keys
+      WHERE user_id = ? 
+        AND deleted_at IS NULL
+    `;
+
+    const [results] = await connection.query<RowDataPacket[]>(query, [id]);
+
+    const count: number = results?.[0]?.count || 0;
+
+    return Number(count);
+  } catch (error) {
+    console.error('Error getting API key count:', error);
+    throw error;
+  }
+};

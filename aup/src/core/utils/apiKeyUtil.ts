@@ -1,14 +1,14 @@
 import { createHmac } from 'node:crypto';
 
 export function generateApiKey(
-  baseId: string,
+  userId: string,
   prefix = 'sk_',
   length = 32,
 ): string {
   //API key: a-b-c
   // a: key - used for finding key in DB
   // b: key-secret - encrypted part of key
-  // c - baseID - encrypted with b
+  // c - userId - encrypted with b
 
   const key = Array.from({ length }, () =>
     Math.random().toString(36).charAt(2),
@@ -17,7 +17,7 @@ export function generateApiKey(
     Math.random().toString(36).charAt(2),
   ).join('');
 
-  return `${prefix}${key}-${keySecret}-${baseId}`;
+  return `${prefix}${key}-${keySecret}-${userId}`;
 }
 
 export function splitApiKey(apiKey: string): string[] {
@@ -35,4 +35,9 @@ export function encryptApiKey(apiKey: string) {
     .digest('hex');
 
   return { key, secret: hash };
+}
+
+export function getUserIdFromApiKey(apiKey: string) {
+  const apiSplit = splitApiKey(apiKey);
+  return apiSplit[2];
 }

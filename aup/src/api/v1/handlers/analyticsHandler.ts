@@ -10,14 +10,31 @@ import {
 } from '../../../core/models/dto/activityListDto';
 import { ActivityDto } from '../../../core/models/dto/activityDto';
 import { ModelUsageDTO } from '../../../core/models/dto/modelUsageDto';
+import {
+  getModelUsageAnalytics,
+  getUsageLogsByUserId,
+  getUserTotalUsage,
+} from '../../../core/db/repositories/usageRepository';
+import { dbConnection } from '../../../server';
+import { calculatePrice } from '../../../core/utils/pricingUtil';
+import { getApiKeyCount } from '../../../core/db/repositories/apiKeyRepository';
+import { UsageModel } from '../../../core/models/database/usageModel';
 
 export const getSummary = async (req: Request, res: Response) => {
   try {
+    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const { totalRequests, totalTokens } = await getUserTotalUsage(
+      dbConnection,
+      userID,
+    );
+
+    const apiKeyNumber = await getApiKeyCount(dbConnection, userID);
+
     const summary: SummaryDTO = {
-      requestCount: 0,
-      tokenCount: 0,
-      moneySpent: 0,
-      activeKeyCount: 0,
+      requestCount: totalRequests,
+      tokenCount: totalTokens,
+      moneySpent: calculatePrice(totalTokens, 'model154'),
+      activeKeyCount: apiKeyNumber,
     };
 
     if (summary) {
@@ -43,19 +60,27 @@ export const getSummary = async (req: Request, res: Response) => {
 export const getUsedModels = async (req: Request, res: Response) => {
   try {
     const params: ModelUsageListRequestDto = req.body;
+    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
 
-    const modelUsage: ModelUsageDTO = {
-      model: 'Test Modle',
-      modelProvider: 'Blaz',
-      requestCount: 3542,
-      moneySpent: 154.3,
-      percentageOfTotalUsage: 100,
-    };
+    const data = await getModelUsageAnalytics(dbConnection, userID, params);
+
     const usedModelsList: ModelUsageListDto = {
-      page: 1,
-      pageSize: 10,
-      totalPages: 1,
-      data: [modelUsage],
+      page: data.page,
+      pageSize: data.pageSize,
+      totalPages: data.totalPages,
+      data: data.data.map((dbModel) => {
+        const moneySpent = calculatePrice(dbModel.totalTokens, dbModel.model);
+
+        const modelUsageDTO: ModelUsageDTO = {
+          model: dbModel.model,
+          modelProvider: dbModel.modelProvider,
+          requestCount: dbModel.requestCount,
+          moneySpent: moneySpent,
+          percentageOfTotalUsage: dbModel.percentageOfTotalUsage,
+        };
+
+        return modelUsageDTO;
+      }),
     };
 
     if (usedModelsList) {
@@ -81,18 +106,26 @@ export const getUsedModels = async (req: Request, res: Response) => {
 export const getReacentActivity = async (req: Request, res: Response) => {
   try {
     const params: ActivityListRequestDto = req.body;
-    const activity: ActivityDto = {
-      id: 1,
-      modelName: 'Test Model',
-      createdAt: new Date(),
-      tokenUsed: 1,
-      moneySpent: 0.1,
-    };
+    const userId = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+
+    const data: UsageModel[] = await getUsageLogsByUserId(
+      dbConnection,
+      userId,
+      params,
+    );
+
+    const activity: ActivityDto[] = data.map((usage) => ({
+      id: parseInt(usage.id),
+      modelName: usage.model_name,
+      createdAt: usage.created_at,
+      tokenUsed: usage.token_count,
+      moneySpent: calculatePrice(usage.token_count, usage.model_name),
+    }));
     const activityList: ActivityListDto = {
       page: 1,
       pageSize: 10,
       totalPages: 1,
-      data: [activity],
+      data: activity,
     };
 
     if (activityList) {
