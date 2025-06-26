@@ -90,13 +90,14 @@ export const createApiKey = async (req: Request, res: Response) => {
 export const updateApiKEyStatus = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
-    const keyApi = (req as any).user.user_id;
+    const keyApi = (req as any).user.id;
+    console.log((req as any).user);
 
     const encryptedKey = encryptApiKey(keyApi);
-    const deleted = await deleteApiKey(dbConnection, encryptedKey.key);
+    const deleted = await deleteApiKey(dbConnection, apiKeyData.id);
 
     res.json({
-      success: true,
+      success: deleted,
     });
   } catch (error) {
     res.status(500).json({

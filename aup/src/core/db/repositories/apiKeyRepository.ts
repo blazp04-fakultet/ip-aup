@@ -36,6 +36,7 @@ export async function deleteApiKey(
   connection: Connection,
   id: string,
 ): Promise<boolean> {
+  console.log(id);
   const deleteQuery = `
     UPDATE api_keys 
     SET deleted_at = CURRENT_TIMESTAMP() 
