@@ -19,10 +19,11 @@ import { dbConnection } from '../../../server';
 import { calculatePrice } from '../../../core/utils/pricingUtil';
 import { getApiKeyCount } from '../../../core/db/repositories/apiKeyRepository';
 import { UsageModel } from '../../../core/models/database/usageModel';
+import { extractUserIdFromToken } from '../../../core/utils/jwtUtil';
 
 export const getSummary = async (req: Request, res: Response) => {
   try {
-    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const userID = extractUserIdFromToken(req.headers.authorization as string);
     const { totalRequests, totalTokens } = await getUserTotalUsage(
       dbConnection,
       userID,
@@ -60,7 +61,7 @@ export const getSummary = async (req: Request, res: Response) => {
 export const getUsedModels = async (req: Request, res: Response) => {
   try {
     const params: ModelUsageListRequestDto = req.body;
-    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const userID = extractUserIdFromToken(req.headers.authorization as string);
 
     const data = await getModelUsageAnalytics(dbConnection, userID, params);
 
@@ -106,7 +107,7 @@ export const getUsedModels = async (req: Request, res: Response) => {
 export const getReacentActivity = async (req: Request, res: Response) => {
   try {
     const params: ActivityListRequestDto = req.body;
-    const userId = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const userId = extractUserIdFromToken(req.headers.authorization as string);
 
     const data: UsageModel[] = await getUsageLogsByUserId(
       dbConnection,

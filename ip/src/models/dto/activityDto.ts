@@ -1,5 +1,5 @@
 export interface ActivityDto {
-  id: number;
+  id: string;
   modelName: string;
   createdAt: Date;
   tokenUsed: number;

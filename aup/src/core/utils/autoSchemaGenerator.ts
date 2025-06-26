@@ -1,4 +1,3 @@
-// core/utils/autoSchemaGenerator.ts
 import * as TJS from 'typescript-json-schema';
 import * as path from 'path';
 
@@ -12,7 +11,6 @@ export const generateSchemasFromTypes = () => {
     strictNullChecks: true,
   };
 
-  // Get all model files
   const modelFiles = [
     path.join(__dirname, '../models/dto/accountBalanceDto.ts'),
     path.join(__dirname, '../models/dto/activityDto.ts'),
@@ -28,7 +26,6 @@ export const generateSchemasFromTypes = () => {
 
   const program = TJS.getProgramFromFiles(modelFiles, compilerOptions);
 
-  // Fix: Properly type the schemas object
   const schemas: Record<string, any> = {};
   const typeNames = [
     'SummaryDTO',

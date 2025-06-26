@@ -1,4 +1,5 @@
 import { createHmac } from 'node:crypto';
+import { config } from '../config/mod';
 
 export function generateApiKey(
   userId: string,
@@ -29,8 +30,7 @@ export function encryptApiKey(apiKey: string) {
   const key = apiSplit[0];
   const secret = apiSplit[1] + apiSplit[2];
 
-  //TODO: Dodati da se ovaj secret uzima iz configa
-  const hash = createHmac('sha256', 'SupersiguranSecret')
+  const hash = createHmac('sha256', config.jwtSecret)
     .update(secret)
     .digest('hex');
 

@@ -10,13 +10,11 @@ import { randomUUID } from 'crypto';
 import { encryptApiKey, generateApiKey } from '../../../core/utils/apiKeyUtil';
 import { getUserTotalUsageForApiKey } from '../../../core/db/repositories/usageRepository';
 import { calculatePrice } from '../../../core/utils/pricingUtil';
-
-// // Validate an API key
-// const validKey = await validateApiKey(connection, 'ak_1234567890');
+import { extractUserIdFromToken } from '../../../core/utils/jwtUtil';
 
 export const getApiKeys = async (req: Request, res: Response) => {
   try {
-    const userID = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const userID = extractUserIdFromToken(req.headers.authorization as string);
 
     const data = await getApiKeysByUserId(dbConnection, userID);
 
@@ -59,7 +57,7 @@ export const createApiKey = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
 
-    const userId = 'a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const userId = extractUserIdFromToken(req.headers.authorization as string);
     const generatedApiKey = generateApiKey(userId);
     console.log(generatedApiKey);
 
@@ -95,8 +93,7 @@ export const createApiKey = async (req: Request, res: Response) => {
 export const updateApiKEyStatus = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
-    const keyApi =
-      'sk_eysiuockgkg89ctmiqmusa55c47mu574-6wzrf4zlz9erqiqzd16bm42im7bx8zl4-a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const keyApi = (req.headers.authorization as string).replace('Bearer ', '');
 
     const encryptedKey = encryptApiKey(keyApi);
     const deleted = await deleteApiKey(dbConnection, encryptedKey.key);

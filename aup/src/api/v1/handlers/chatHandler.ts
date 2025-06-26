@@ -9,14 +9,10 @@ import {
   getUserIdFromApiKey,
 } from '../../../core/utils/apiKeyUtil';
 
-const OPENAI_CHAT_URL = 'https://api.openai.com/v1/chat/completions';
-const OPENAI_MODELS_URL = 'https://api.openai.com/v1/models';
-
 export const listModelsHandler = async (req: Request, res: Response) => {
   try {
     const allModels: any[] = [];
 
-    // Loop through all LLM providers
     for (const provider of config.llmProviders) {
       try {
         const { data } = await axios.get(provider.endpoint + '/models', {
@@ -25,7 +21,6 @@ export const listModelsHandler = async (req: Request, res: Response) => {
           },
         });
 
-        // Add models with provider name prefix
         const providerModels = data.data.map((model: any) => ({
           id: `${provider.name}::${model.id}`,
           object: model.object,
@@ -33,7 +28,6 @@ export const listModelsHandler = async (req: Request, res: Response) => {
 
         allModels.push(...providerModels);
       } catch (providerError: any) {
-        // Log error for this provider but continue with others
         console.error(
           `Failed to fetch models from provider ${provider.name}:`,
           providerError.message,
@@ -95,16 +89,14 @@ export const chatHandler = async (req: Request, res: Response) => {
       },
     );
 
-    //TODO: Dodati ovdje korisnika iz autorizacije kao i api key koji koristi
-    const apiKey =
-      'sk_eysiuockgkg89ctmiqmusa55c47mu574-6wzrf4zlz9erqiqzd16bm42im7bx8zl4-a5d0e15a-2eb8-4978-b193-86510c7dafa5';
+    const keyApi = (req.headers.authorization as string).replace('Bearer ', '');
     await addUsageLog(dbConnection, {
       id: randomUUID(),
       modelName: actualModel,
       tokenCount: data.usage.total_tokens,
       modelProvider: providerName,
-      userId: getUserIdFromApiKey(apiKey),
-      apiKey: encryptApiKey(apiKey).key + '-' + encryptApiKey(apiKey).secret,
+      userId: getUserIdFromApiKey(keyApi),
+      apiKey: encryptApiKey(keyApi).key + '-' + encryptApiKey(keyApi).secret,
     });
 
     res.status(200).json(data);

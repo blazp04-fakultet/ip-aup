@@ -12,7 +12,7 @@ const v1router = Router();
 v1router.use('/analytics', authenticateJWT, analyticsRoutes);
 v1router.use('/api-keys', authenticateJWT, apiKeyRoutes);
 v1router.use('/balance', authenticateJWT, balanceRoutes);
-v1router.use('/auth', authenticateApiKey, authRoutes);
+v1router.use('/auth', authRoutes);
 v1router.use('/', authenticateApiKey, chatRoutes);
 
 v1router.get('/health', (req, res) => {

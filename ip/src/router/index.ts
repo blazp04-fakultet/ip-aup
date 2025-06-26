@@ -22,21 +22,25 @@ const router = createRouter({
     {
       path: "/",
       component: Dashbord,
+      meta: { requiresAuth: true },
       children: [
         {
           path: "/home",
           name: "Home",
           component: () => import("@/pages/index.vue"),
+          meta: { requiresAuth: true },
         },
         {
           path: "/token",
           name: "token",
           component: () => import("@/pages/token.vue"),
+          meta: { requiresAuth: true },
         },
         {
           path: "/billing",
           name: "billing",
           component: () => import("@/pages/billing.vue"),
+          meta: { requiresAuth: true },
         },
       ],
     },
@@ -54,7 +58,21 @@ const router = createRouter({
   ],
 });
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
+// Navigation guard for route protection
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+  const isAuthRoute = to.path === "/login" || to.path === "/signup";
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+
+  if (requiresAuth && !token) {
+    next("/login");
+  } else if (isAuthRoute && token) {
+    next("/home");
+  } else {
+    next();
+  }
+});
+
 router.onError((err, to) => {
   if (err?.message?.includes?.("Failed to fetch dynamically imported module")) {
     if (localStorage.getItem("vuetify:dynamic-reload")) {
