@@ -13,6 +13,8 @@ const router = express.Router();
  *   get:
  *     summary: Get all API keys
  *     tags: [API Keys]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: API keys retrieved successfully
@@ -53,6 +55,8 @@ router.get('/', getApiKeys);
  *   post:
  *     summary: Create a new API key
  *     tags: [API Keys]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -110,6 +114,8 @@ router.post('/new', createApiKey);
  *   put:
  *     summary: Update API key status
  *     tags: [API Keys]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

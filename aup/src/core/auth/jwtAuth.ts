@@ -1,39 +1,28 @@
-// import { Context } from '@oak/oak';
-// import { verify } from 'jsr:@wok/djwt';
-// import { config } from '../config/mod.ts';
+// middleware/auth.ts
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { config } from '../config/mod';
 
-// export const jwtAuthMiddleware = async (
-//   ctx: Context,
-//   next: () => Promise<unknown>,
-// ) => {
-//   const authHeader = ctx.request.headers.get('Authorization');
-//   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//     ctx.response.status = 401;
-//     ctx.response.body = { error: 'Unauthorized: Missing or invalid JWT' };
-//     return;
-//   }
+export const authenticateJWT = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
 
-//   const token = authHeader.split(' ')[1];
+  if (!token) {
+    res.status(401).json({ message: 'Access token required' });
+    return;
+  }
 
-//   try {
-//     const secret: string = config.superbaseSecret;
+  jwt.verify(token, config.jwtSecret as string, (err, user) => {
+    if (err) {
+      res.status(403).json({ message: 'Invalid or expired token' });
+      return;
+    }
 
-//     const encoder = new TextEncoder();
-//     const keyData = encoder.encode(secret);
-//     const cryptoKey = await crypto.subtle.importKey(
-//       'raw',
-//       keyData,
-//       { name: 'HMAC', hash: 'SHA-256' },
-//       false,
-//       ['verify'],
-//     );
-
-//     await verify(token, cryptoKey);
-
-//     await next();
-//   } catch (_) {
-//     ctx.response.status = 401;
-//     ctx.response.body = { error: 'Unauthorized: Invalid JWT' };
-//     return;
-//   }
-// };
+    (req as any).user = user;
+    next();
+  });
+};

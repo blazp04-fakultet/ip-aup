@@ -1,5 +1,6 @@
 import express from 'express';
 import { chatHandler, listModelsHandler } from '../handlers/chatHandler';
+import { authenticateApiKey } from '../../../core/auth/apiKeyAuth';
 
 const router = express.Router();
 

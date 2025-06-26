@@ -9,6 +9,8 @@ const router = express.Router();
  *   get:
  *     summary: Get current account balance
  *     tags: [Balance]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Account balance retrieved successfully
@@ -47,6 +49,8 @@ router.get('/', getBalance);
  *   post:
  *     summary: Add funds to account balance
  *     tags: [Balance]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

@@ -19,7 +19,20 @@ const options = {
       schemas: {
         ...generateSchemasFromTypes(),
       },
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter your JWT token',
+        },
+      },
     },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   apis: ['./src/api/v1/routes/*.ts', './src/api/v1/handlers/*.ts'],
 };

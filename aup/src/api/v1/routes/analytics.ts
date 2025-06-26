@@ -4,6 +4,7 @@ import {
   getSummary,
   getUsedModels,
 } from '../handlers/analyticsHandler';
+import { authenticateJWT } from '../../../core/auth/jwtAuth';
 
 const router = express.Router();
 
@@ -13,6 +14,8 @@ const router = express.Router();
  *   get:
  *     summary: Get analytics summary
  *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Analytics summary retrieved successfully
@@ -64,6 +67,8 @@ router.get('/summary', getSummary);
  *   post:
  *     summary: Get used models analytics
  *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -121,6 +126,8 @@ router.post('/used-models', getUsedModels);
  *   post:
  *     summary: Get recent activity analytics
  *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
