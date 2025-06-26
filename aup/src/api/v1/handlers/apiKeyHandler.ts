@@ -90,7 +90,7 @@ export const createApiKey = async (req: Request, res: Response) => {
 export const updateApiKEyStatus = async (req: Request, res: Response) => {
   try {
     const apiKeyData: ApiKeyDto = req.body;
-    const keyApi = (req.headers.authorization as string).replace('Bearer ', '');
+    const keyApi = (req as any).user.user_id;
 
     const encryptedKey = encryptApiKey(keyApi);
     const deleted = await deleteApiKey(dbConnection, encryptedKey.key);

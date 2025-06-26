@@ -89,14 +89,16 @@ export const chatHandler = async (req: Request, res: Response) => {
       },
     );
 
-    const keyApi = (req.headers.authorization as string).replace('Bearer ', '');
+    const userId = (req as any).user.user_id;
+    const apiKey = (req as any).user.id + (req as any).user.key;
+    console.log(userId, apiKey);
     await addUsageLog(dbConnection, {
       id: randomUUID(),
       modelName: actualModel,
       tokenCount: data.usage.total_tokens,
       modelProvider: providerName,
-      userId: getUserIdFromApiKey(keyApi),
-      apiKey: encryptApiKey(keyApi).key + '-' + encryptApiKey(keyApi).secret,
+      userId: userId,
+      apiKey: apiKey,
     });
 
     res.status(200).json(data);

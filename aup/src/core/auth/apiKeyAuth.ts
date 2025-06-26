@@ -34,5 +34,7 @@ export const authenticateApiKey = async (
     return;
   }
 
+  (req as any).user = valid;
+  console.log(valid);
   next();
 };

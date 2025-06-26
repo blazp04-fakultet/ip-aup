@@ -12,6 +12,7 @@ export async function addUsageLog(
   params: UsageLogModel,
 ) {
   const { id, modelName, tokenCount, modelProvider, userId, apiKey } = params;
+  console.log(userId, 'RRRR');
 
   const insertQuery = `
   INSERT INTO \`usage\` (

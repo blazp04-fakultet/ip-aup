@@ -35,7 +35,7 @@ export const loginHandler = async (req: Request, res: Response) => {
       { id: loginData.id, email: loginData.email },
       config.jwtSecret,
       {
-        expiresIn: '1h',
+        expiresIn: '23h',
       },
     );
 
@@ -77,7 +77,7 @@ export const registerHandler = async (req: Request, res: Response) => {
       { id: userModel.id, email: userModel.email },
       config.jwtSecret,
       {
-        expiresIn: '1h',
+        expiresIn: '23h',
       },
     );
 
